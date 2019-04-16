@@ -228,7 +228,7 @@ async function checkProfitable(jsonObj) {
                 provider: 'google',
                 // Optional depending on the providers
                 httpAdapter: 'https', // Default
-                apiKey: 'AIzaSyCG1efbPiwAWreX7PEe16cdwy-QWv2Hz24', // for Mapquest, OpenCage, Google Premier
+                apiKey: 'AIzaSyBFf18v1TUapIPxyTkgTbybjgK672hwt-s', // for Mapquest, OpenCage, Google Premier
                 formatter: null         // 'gpx', 'string', ...
               };
               var geocoder = NodeGeocoder(options);

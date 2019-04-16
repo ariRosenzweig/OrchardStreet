@@ -204,7 +204,7 @@ async function mainControllerScrapper(propertyIds,res) {
                 }
                 loop(propertyIds, i, processData);
             } else {
-                await new Promise(resolve => setTimeout(resolve, 9000));
+                await new Promise(resolve => setTimeout(resolve, 10000));
                 console.log("done");
                 res.send("Completed Scrapping");
             }

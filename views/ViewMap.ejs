@@ -17,18 +17,19 @@
 <div id="map"></div>
 <div id="floating-panel">
     <input onclick="scrape();" type=button value="Scrape">
+    <input onclick="trash();" type=button value="Delete  Pin">
 
 </div>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
     // Initialize and add the map
-    var ids = [];
+    var ids = [], removeIds= [];
     var coordinates,detailsList = [];
-
+    var removePinList = [];
     function scrape() {
         var filteredIds = [], filteredCoordinates = [];
         for(var i = 0; i< ids.length; i++){
-            if(ids[i] == 0)
+            if(removeIds.includes(i))
                 continue;
             filteredIds.push(ids[i]);
             filteredCoordinates.push(detailsList[i]);
@@ -42,7 +43,10 @@
             addImage();
         });
     }
-
+    function trash(){
+        for (var i = 0; i<removePinList.length;i++)
+            removePinList[i].setMap(null);
+    }
 
     function addImage(){
         google.maps.event.trigger(map, 'resize');
@@ -51,12 +55,10 @@
     var latlong = coordinates.split("xx");
     function initMap() {
         // The location of Uluru
-        var uluru = {lat:41.881832,lng:-87.623177 };
+        var mapCenterCordinates = {lat:41.881832,lng:-87.623177 };
         // The map, centered at Uluru
-
-        //var ab = {lat:41.881832,lng:-88.623177};
         var map = new google.maps.Map(
-            document.getElementById('map'), {zoom: 10, center: uluru});
+            document.getElementById('map'), {zoom: 10, center: mapCenterCordinates});
 
 
         var marker, i,latitude,longitude,xy,details=[],detailsArray=[],prop,infoWindowDetails = [];
@@ -67,13 +69,14 @@
         var MailToZip, MailToPhone, FirstNamePurchaser, DoNotCall;
         console.log("Total valid Records: "+latlong.length)
         var infowindow = new google.maps.InfoWindow();
+
         for (i = 0; i < latlong.length; i++) {
             details = latlong[i].split("**");
             detailsList.push(details+"??");
             xy = details[0].split(",");
             details = details[1];
+            console.log(details);
             detailsArray = details.split(',');
-            console.log(detailsArray)
             RISInputDate = detailsArray[1];
             PropertyIdentificationNumber = detailsArray[2];
             DeedNumber = detailsArray[3];
@@ -149,7 +152,10 @@
 
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(longitude, latitude),
-                map: map
+                map: map,
+                icon: {
+                    url: 'https://www.google.com/mapfiles/marker_green.png'
+                }
 
             });
 
@@ -159,7 +165,7 @@
                     infowindow.open(map, marker);
                 }
             })(marker, i));
-            google.maps.event.addListener(marker, 'mousemove', (function (marker, i) {
+            google.maps.event.addListener(marker, 'mouseho', (function (marker, i) {
                 return function () {
                     infowindow.setContent(infoWindowDetails[i]);
                     infowindow.open(map, marker);
@@ -167,15 +173,27 @@
             })(marker, i));
             google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
                 return function () {
-                    marker.setMap(null);
-                    ids[i] = "0";
+                    if(!removePinList.includes(marker)){
+                        removePinList.push(marker);
+                        removeIds.push(i);
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                    }
+                    else{
+                        removePinList.splice(removePinList.indexOf(marker),1);
+                        removeIds.splice(removeIds.indexOf(i),1);
+                        marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
+                    }
+
+
+                    // marker.setMap(null);
+                    // ids[i] = "0";
                 }
             })(marker, i));
         }
     }
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZ-DUHuQZjYRH1584MNbDZKunt5LKhZwk&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFf18v1TUapIPxyTkgTbybjgK672hwt-s&callback=initMap">
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
 

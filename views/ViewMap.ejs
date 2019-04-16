@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 800px;  /* The height is 400 pixels */
+            width: 100%;  /* The width is the width of the web page */
+        }
+    </style>
+</head>
+<body>
+<h3>Property Map</h3>
+<!--The div element for the map -->
+
+
+<div id="map"></div>
+<div id="floating-panel">
+    <input onclick="scrape();" type=button value="Scrape">
+
+</div>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+    // Initialize and add the map
+    var ids = [];
+    var coordinates,detailsList = [];
+
+    function scrape() {
+        var filteredIds = [], filteredCoordinates = [];
+        for(var i = 0; i< ids.length; i++){
+            if(ids[i] == 0)
+                continue;
+            filteredIds.push(ids[i]);
+            filteredCoordinates.push(detailsList[i]);
+        }
+        console.log(filteredIds,filteredCoordinates);
+        $.ajax({
+            type: "POST",
+            url: "/csvUpload/map",
+            data: JSON.stringify(filteredIds+"$$$"+filteredCoordinates),
+        }).done(function () {
+            addImage();
+        });
+    }
+
+
+    function addImage(){
+        google.maps.event.trigger(map, 'resize');
+    }
+    coordinates = "<%= x%>";
+    var latlong = coordinates.split("xx");
+    function initMap() {
+        // The location of Uluru
+        var uluru = {lat:41.881832,lng:-87.623177 };
+        // The map, centered at Uluru
+
+        //var ab = {lat:41.881832,lng:-88.623177};
+        var map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 10, center: uluru});
+
+
+        var marker, i,latitude,longitude,xy,details=[],detailsArray=[],prop,infoWindowDetails = [];
+        var RISInputDate, PropertyIdentificationNumber, DeedNumber, RedemptionExpDate;
+        var  RespondentFirstName1, RespondentLastName1, RespondentFirstName2, RespondentLastName2, PropertyAddress;
+        var PropertyCity, PropertyState, PropertyZipCode, PropertyType, TaxYearOwed, CountyFIPS, DateofSale;
+        var LienAmount, MultipleListingService, MailToFirstName, MailToLastName, MailToAddress, MailToState;
+        var MailToZip, MailToPhone, FirstNamePurchaser, DoNotCall;
+        console.log("Total valid Records: "+latlong.length)
+        var infowindow = new google.maps.InfoWindow();
+        for (i = 0; i < latlong.length; i++) {
+            details = latlong[i].split("**");
+            detailsList.push(details+"??");
+            xy = details[0].split(",");
+            details = details[1];
+            detailsArray = details.split(',');
+            console.log(detailsArray)
+            RISInputDate = detailsArray[1];
+            PropertyIdentificationNumber = detailsArray[2];
+            DeedNumber = detailsArray[3];
+            RedemptionExpDate = detailsArray[4];
+            RespondentFirstName1 = detailsArray[5];
+            RespondentLastName1 = detailsArray[6];
+            RespondentFirstName2 = detailsArray[7];
+            RespondentLastName2 = detailsArray[8];
+            PropertyAddress = detailsArray[9];
+            prop = PropertyIdentificationNumber.split(" ");
+            prop = prop[0] + prop[1] + prop[2] + prop[3] + prop[4];
+            //console.log(prop);
+            ids.push(prop);
+            PropertyCity = detailsArray[10];
+            PropertyState = detailsArray[11];
+            PropertyZipCode = detailsArray[12];
+            PropertyType = detailsArray[13];
+            TaxYearOwed = detailsArray[14];
+            CountyFIPS = detailsArray[15];
+            DateofSale = detailsArray[16];
+            LienAmount = detailsArray[17].replace(':', ',');
+            MultipleListingService = detailsArray[18];
+            MailToFirstName = detailsArray[19];
+            MailToLastName = detailsArray[20];
+            MailToAddress = detailsArray[21];
+            MailToState = detailsArray[22];
+            MailToZip = detailsArray[23];
+            MailToPhone = detailsArray[24];
+            FirstNamePurchaser = detailsArray[25];
+            DoNotCall = detailsArray[26];
+            infoWindowDetails.push('<img src="http://gis1.cookcountyil.gov/cookViewer/PhotoProxy.aspx?' + prop + '=" style="max-height: 500px; max-width: 550px;">\n' +
+                '\t<ul>\n' +
+                '\t\t<li>RIS Input Date:' + RISInputDate + ' </li>\n' +
+                '\t\t<li>Property Identification Number:' + PropertyIdentificationNumber + '</li>\n' +
+                '\t\t<li>DeedNumber:' + DeedNumber + '</li>\n' +
+                '\t\t<li>Redemption ExpDate:' + RedemptionExpDate + ' </li>\n' +
+                '\t\t<li>Respondent First Name 1:' + RespondentFirstName1 + '</li>\n' +
+                '\t\t<li>Respondent Last Name 1:' + RespondentLastName1 + ' </li>\n' +
+                '\t\t<li>Respondent First Name 2:' + RespondentFirstName2 + ' </li>\n' +
+                '\t\t<li>Respondent Last Name 2:' + RespondentLastName2 + ' </li>\n' +
+                '\t\t<li>Property Address:' + PropertyAddress + ' </li>\n' +
+                '\t\t<li>Property City:' + PropertyCity + '</li>\n' +
+                '\t\t<li>Property State:' + PropertyState + '</li>\n' +
+                '\t\t<li>Property Zip Code:' + PropertyZipCode + '</li>\n' +
+                '\t\t<li>Property Type:' + PropertyType + ' </li>\n' +
+                '\t\t<li>Tax Year Owed:' + TaxYearOwed + ' </li>\n' +
+                '\t\t<li>County FIPS:' + CountyFIPS + ' </li>\n' +
+                '\t\t<li>Date of Sale:' + DateofSale + ' </li>\n' +
+                '\t\t<li>Lien Amount:' + LienAmount + ' </li>\n' +
+                '\t\t<li>Multiple Listing Service:' + MultipleListingService + ' </li>\n' +
+                '\t\t<li>Mail To FirstName:' + MailToFirstName + ' </li>\n' +
+                '\t\t<li>Mail To LastName:' + MailToLastName + ' </li>\n' +
+                '\t\t<li>Mail To Address:' + MailToAddress + ' </li>\n' +
+                '\t\t<li>Mail To State:' + MailToState + '</li>\n' +
+                '\t\t<li>Mail To Zip:' + MailToZip + ' </li>\n' +
+                '\t\t<li>Mail To Phone:' + MailToPhone + ' </li>\n' +
+                '\t\t<li>First Name Purchaser:' + FirstNamePurchaser + ' </li>\n' +
+                '\t\t<li>Do Not Call:' + DoNotCall + ' </li>\n' +
+                '\t</ul>\n' +
+                '<img src="/Images/TaxDelinquent/'+prop+'.png" width="99%" height="99%">' +
+                '<img src="/Images/ClerkOfCourt/'+prop+'.png" width="99%" height="99%">' +
+                '<img src="/Images/CookCounty/'+prop+'.png" width="97%" height="97%">' );
+            //console.log(detailsArray);
+
+            if (xy.length == 4) {
+                latitude = parseFloat(xy[2]);
+                longitude = parseFloat(xy[1]);
+            } else if (xy.length == 3) {
+                latitude = parseFloat(xy[1]);
+                longitude = parseFloat(xy[0]);
+            } else
+                continue;
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(longitude, latitude),
+                map: map
+
+            });
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                return function () {
+                    infowindow.setContent(infoWindowDetails[i]);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+            google.maps.event.addListener(marker, 'mousemove', (function (marker, i) {
+                return function () {
+                    infowindow.setContent(infoWindowDetails[i]);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+            google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
+                return function () {
+                    marker.setMap(null);
+                    ids[i] = "0";
+                }
+            })(marker, i));
+        }
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZ-DUHuQZjYRH1584MNbDZKunt5LKhZwk&callback=initMap">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+
+</body>
+
+
+
+</html>

@@ -1,0 +1,53 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+html, body{height:100%; margin:0;padding:0}
+
+.container-fluid{
+  height:100%;
+  display:table;
+  width: 100%;
+  padding: 0;
+}
+
+.jumbotron font{
+  size: A3;
+}
+
+.jumbotron p{
+  color: navy;
+}
+.row-fluid {height: 100%; display:table-cell; vertical-align: middle;}
+
+.blob-results {
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 0.5em;
+  box-shadow: 0.2em 0.2em 0.6em 0.2em grey;
+}
+
+.x-margin-bottom {
+  margin-bottom: 1em;
+}
+.display-2 {
+  font-size: 2em;
+}
+
+.centering {
+  float:none;
+  margin:0 auto;
+}
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300');
+.center-pills {
+  display: inline-block;
+}
+.white-bg {
+  background: white;
+}

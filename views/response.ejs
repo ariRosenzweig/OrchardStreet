@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+
+    <title></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Property Search Automator | Results</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .header {
+            text-align: center;
+            padding: 32px;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .column img {
+            margin-top: 12px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        #myImg:hover {opacity: 0.7;}
+
+    </style>
+   </head>
+<html>
+
+<body background="Images/Utility/background.png">
+<div class="container">
+    <div class="jumbotron">
+        <h1> Property Automatation Suite</h1>
+        <p> Property Details </p>
+        <form class="navbar-form navbar-left">
+            <div class="row">
+                <div class="column">
+                    <img id="myImg" src="<%=url1%>"  style="width:100%" onclick="window.open(this.src)">
+                    <img id="myImg" src="<%=url2%>"  style="width:100%" onclick="window.open(this.src)">
+                </div>
+                <div class="column">
+                    <img id="myImg" src="<%=url3%>"  style="width:100%" onclick="window.open(this.src)">
+                    <img id="myImg" src="<%=url4%>"  style="width:100%" onclick="window.open(this.src)">
+                </div>
+
+          </div>
+        </form>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -199,12 +199,12 @@ async function mainControllerScrapper(propertyIds,res) {
         processData(propertyIds[i].replace('{','').replace('}','').trim(), i).then(async function () {
             console.log("After Process data");
             if (++i < propertyIds.length) {
-                if (i % 10 == 0){
+                if (i % 15 == 0){
                     await new Promise(resolve => setTimeout(resolve, 4000));
                 }
                 loop(propertyIds, i, processData);
             } else {
-                await new Promise(resolve => setTimeout(resolve, 4000));
+                await new Promise(resolve => setTimeout(resolve, 9000));
                 console.log("done");
                 res.send("Completed Scrapping");
             }

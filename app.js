@@ -105,7 +105,7 @@ function TaxDelinquent(pinbox,id) {
   (async () => {
     try {
       console.log("started fetching page:Tax Delinquent:"+pinbox+":"+id);
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({args: ['--no-sandbox']});
       const page = await browser.newPage();
       await page.goto('https://taxdelinquent.cookcountyclerk.com/');
       await page.focus('#Pin');
@@ -126,7 +126,7 @@ function TaxDelinquent(pinbox,id) {
 function RecorderOfDeeds(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
   const puppeteer = require('puppeteer');
   (async () => {
-    const browser = await puppeteer.launch({headless:false});
+    const browser = await puppeteer.launch({args: ['--no-sandbox']});
     try{
       console.log("started fetching page");
       const page = await browser.newPage();
@@ -203,7 +203,7 @@ app.get("/search",function (req,res) {
 coordinates = [];
 async function checkProfitable(jsonObj) {
   const puppeteer = require('puppeteer');
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({args: ['--no-sandbox']});
   try {
     console.log("started fetching page:Tax Delinquent:" + jsonObj['Property Identification Number']);
     const page = await browser.newPage();

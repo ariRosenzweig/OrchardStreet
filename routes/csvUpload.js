@@ -96,7 +96,7 @@ function clerkOfCourt(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
 function TaxDelinquent(pinbox,id) {
     const puppeteer = require('puppeteer');
     (async () => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({args: ['--no-sandbox']});
         const page = await browser.newPage();
         try {
             console.log("started fetching page:Tax Delinquent:"+pinbox+":"+id);
@@ -124,7 +124,7 @@ function RecorderOfDeeds(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
     console.log("Inside recorder of deeds");
     const puppeteer = require('puppeteer');
     (async () => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({args: ['--no-sandbox']});
         await new Promise(resolve => setTimeout(resolve, 800));
         const page = await browser.newPage();
         try{

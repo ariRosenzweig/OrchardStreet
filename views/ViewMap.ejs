@@ -10,15 +10,17 @@
     </style>
 </head>
 <body>
+
 <h3>Property Map</h3>
 <!--The div element for the map -->
 
+<img id="loading" src="Images/Utility/loading-bar-animated-gif-transparent-background-3.gif" class="img-fluid" style="display: none;">
 
 <div id="map"></div>
 <div id="floating-panel">
     <input onclick="scrape();" type=button value="Scrape">
     <input onclick="trash();" type=button value="Delete  Pin">
-
+    <input onclick="drawRec();" type=button value="Draw Rectangle">
 </div>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
@@ -26,7 +28,10 @@
     var ids = [], removeIds= [];
     var coordinates,detailsList = [];
     var removePinList = [];
+
+    //Sends selected pin numbers to scrapper
     function scrape() {
+        document.getElementById("loading").setAttribute("style", "width: 20%;")
         var filteredIds = [], filteredCoordinates = [];
         for(var i = 0; i< ids.length; i++){
             if(removeIds.includes(i))
@@ -43,36 +48,42 @@
             addImage();
         });
     }
+
+    //Removes all red markers
     function trash(){
         for (var i = 0; i<removePinList.length;i++)
             removePinList[i].setMap(null);
     }
-
+    //Refresh all markers to load the image
     function addImage(){
+        document.getElementById("loading").setAttribute("style", "display: none;");
         google.maps.event.trigger(map, 'resize');
     }
     coordinates = "<%= x%>";
     var latlong = coordinates.split("xx");
+    let map;
+    var shiftPressed = false;
+    let markerList = [];
+    //init function
     function initMap() {
-        // The location of Uluru
-        var mapCenterCordinates = {lat:41.881832,lng:-87.623177 };
-        // The map, centered at Uluru
-        var map = new google.maps.Map(
+        // The map, center
+        const mapCenterCordinates = {lat: 41.881832, lng: -87.623177};
+        map = new google.maps.Map(
             document.getElementById('map'), {zoom: 10, center: mapCenterCordinates});
 
+        let  i, latitude, longitude, xy, details = [], detailsArray = [], prop, infoWindowDetails = [];
+        let RISInputDate, PropertyIdentificationNumber, DeedNumber, RedemptionExpDate;
+        let RespondentFirstName1, RespondentLastName1, RespondentFirstName2, RespondentLastName2, PropertyAddress;
+        let PropertyCity, PropertyState, PropertyZipCode, PropertyType, TaxYearOwed, CountyFIPS, DateofSale;
+        let LienAmount, MultipleListingService, MailToFirstName, MailToLastName, MailToAddress, MailToState;
+        let MailToZip, MailToPhone, FirstNamePurchaser, DoNotCall;
 
-        var marker, i,latitude,longitude,xy,details=[],detailsArray=[],prop,infoWindowDetails = [];
-        var RISInputDate, PropertyIdentificationNumber, DeedNumber, RedemptionExpDate;
-        var  RespondentFirstName1, RespondentLastName1, RespondentFirstName2, RespondentLastName2, PropertyAddress;
-        var PropertyCity, PropertyState, PropertyZipCode, PropertyType, TaxYearOwed, CountyFIPS, DateofSale;
-        var LienAmount, MultipleListingService, MailToFirstName, MailToLastName, MailToAddress, MailToState;
-        var MailToZip, MailToPhone, FirstNamePurchaser, DoNotCall;
-        console.log("Total valid Records: "+latlong.length)
-        var infowindow = new google.maps.InfoWindow();
+        console.log("Total valid Records: " + latlong.length)
 
+        let infowindow = new google.maps.InfoWindow();
         for (i = 0; i < latlong.length; i++) {
             details = latlong[i].split("**");
-            detailsList.push(details+"??");
+            detailsList.push(details + "??");
             xy = details[0].split(",");
             details = details[1];
             console.log(details);
@@ -136,10 +147,10 @@
                 '\t\t<li>First Name Purchaser:' + FirstNamePurchaser + ' </li>\n' +
                 '\t\t<li>Do Not Call:' + DoNotCall + ' </li>\n' +
                 '\t</ul>\n' +
-                '<img src="/Images/TaxDelinquent/'+prop+'.png" width="99%" height="99%">' +
-                '<img src="/Images/ClerkOfCourt/'+prop+'.png" width="99%" height="99%">' +
-                '<img src="/Images/CookCounty/'+prop+'.png" width="97%" height="97%">' );
-            //console.log(detailsArray);
+                '<img src="/Images/TaxDelinquent/' + prop + '.png" width="99%" height="99%" >' +
+                '<img src="/Images/ClerkOfCourt/' + prop + '.png" width="99%" height="99%">' +
+                '<img src="/Images/CookCounty/' + prop + '.png" width="97%" height="97%">');
+
 
             if (xy.length == 4) {
                 latitude = parseFloat(xy[2]);
@@ -158,43 +169,89 @@
                 }
 
             });
-
+            markerList.push(marker);
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
                     infowindow.setContent(infoWindowDetails[i]);
                     infowindow.open(map, marker);
                 }
             })(marker, i));
-            google.maps.event.addListener(marker, 'mouseho', (function (marker, i) {
-                return function () {
-                    infowindow.setContent(infoWindowDetails[i]);
-                    infowindow.open(map, marker);
-                }
-            })(marker, i));
+
             google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
                 return function () {
-                    if(!removePinList.includes(marker)){
-                        removePinList.push(marker);
-                        removeIds.push(i);
-                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-                    }
-                    else{
-                        removePinList.splice(removePinList.indexOf(marker),1);
-                        removeIds.splice(removeIds.indexOf(i),1);
-                        marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
-                    }
-
-
+                    maintainMarkers(marker,i);
                     // marker.setMap(null);
                     // ids[i] = "0";
                 }
             })(marker, i));
         }
+        google.maps.event.addListener(marker, 'click', (function (marker, key) {
+            return function () {
+                infowindow.setContent(key);
+                infowindow.open(map, marker);
+            }
+        })(marker, key));
+
+
+    }
+
+    function maintainMarkers(marker,i) {
+        if (!removePinList.includes(marker)) {
+            removePinList.push(marker);
+            removeIds.push(i);
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+            console.log(i);
+        } else {
+            removePinList.splice(removePinList.indexOf(marker), 1);
+            removeIds.splice(removeIds.indexOf(i), 1);
+            marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
+        }
+    }
+    //Rectangle drawing tool function
+    function drawRec() {
+        //Setting options for the Drawing Tool. In our case, enabling Polygon shape.
+        let drawingManager = new google.maps.drawing.DrawingManager();
+        drawingManager.setOptions({
+            drawingMode : google.maps.drawing.OverlayType.RECTANGLE,
+            drawingControl : true,
+            drawingControlOptions : {
+                position : google.maps.ControlPosition.TOP_CENTER,
+                drawingModes : [ google.maps.drawing.OverlayType.RECTANGLE ]
+            },
+            rectangleOptions : {
+                strokeColor : '#6c6c6c',
+                strokeWeight : 3.5,
+                fillColor : '#926239',
+                fillOpacity : 0.6,
+                editable: true,
+                draggable: false
+            }
+        });
+
+        // Loading the drawing Tool in the Map.
+        drawingManager.setMap(map);
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            var lng1 = event.overlay.getBounds().ia.j;
+            var lat1 = event.overlay.getBounds().na.j;
+            var lng2 = event.overlay.getBounds().ia.l;
+            var lat2 = event.overlay.getBounds().na.l;
+            var rectangleCordinates = [{lat:lat1,lng:lng1},{lat:lat2,lng:lng2},{lat:lat2,lng:lng2},{lat:lat1,lng:lng2}]
+            var polygon = new google.maps.Polygon({paths:rectangleCordinates})
+            event.overlay.setMap(null);
+            drawingManager.setMap(null);
+            for(i = 0; i< markerList.length;i++){
+                point = markerList[i];
+                var cordinates =  new google.maps.LatLng(point.position.lat(),point.position.lng());
+                if(google.maps.geometry.poly.containsLocation(cordinates, polygon)){
+                    console.log(i);
+                    maintainMarkers(point,i);
+                }
+            }
+        });
     }
 </script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFf18v1TUapIPxyTkgTbybjgK672hwt-s&callback=initMap">
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFf18v1TUapIPxyTkgTbybjgK672hwt-s&libraries=drawing&callback=initMap"
+        async defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
 
 </body>

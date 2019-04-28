@@ -98,8 +98,6 @@ function clerkOfCourt(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
       console.log("Error in recognizing");
     }
 
-
-
   })()
 }
 function TaxDelinquent(pinbox,id) {
@@ -172,7 +170,6 @@ app.get("/search",function (req,res) {
     res.render("home.ejs");
   try {
       if (!fs.existsSync("public/Images/CookCounty/"+propertyId+".png")) {
-
         cookCountyScrapper(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
       }
       if (!fs.existsSync("public/Images/CookCounty/"+propertyId+".png")) {

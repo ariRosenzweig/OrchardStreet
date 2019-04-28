@@ -8,10 +8,10 @@ function displayResult(pin) {
     var ccrdImg = document.createElement("img");
     ccrdImg.setAttribute("src", "/Images/CookCounty/" +pin+ ".png");
     container.appendChild(ccrdImg);
-    CCRD
-    var dTaxImg = document.createElement("img");
-    dTaxImg.setAttribute("src", "/Images/RecorderOfDeeds/" +pin+ ".png");
-    container.appendChild(dTaxImg);
+    // CCRD
+    // var dTaxImg = document.createElement("img");
+    // dTaxImg.setAttribute("src", "/Images/RecorderOfDeeds/" +pin+ ".png");
+    // container.appendChild(dTaxImg);
     //Delinquent Tax Search
     var cccImg = document.createElement("img");
     cccImg.setAttribute("src", "/Images/TaxDelinquent/" +pin+ ".png");

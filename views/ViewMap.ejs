@@ -14,7 +14,7 @@
 <h3>Property Map</h3>
 <!--The div element for the map -->
 
-<img id="loading" src="Images/Utility/loading-bar-animated-gif-transparent-background-3.gif" class="img-fluid" style="display: none;">
+
 
 <div id="map"></div>
 <div id="floating-panel">
@@ -31,7 +31,7 @@
 
     //Sends selected pin numbers to scrapper
     function scrape() {
-        document.getElementById("loading").setAttribute("style", "width: 20%;")
+
         var filteredIds = [], filteredCoordinates = [];
         for(var i = 0; i< ids.length; i++){
             if(removeIds.includes(i))
@@ -56,7 +56,7 @@
     }
     //Refresh all markers to load the image
     function addImage(){
-        document.getElementById("loading").setAttribute("style", "display: none;");
+        window.alert("Scrapping Complete");
         google.maps.event.trigger(map, 'resize');
     }
     coordinates = "<%= x%>";

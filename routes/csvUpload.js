@@ -178,8 +178,8 @@ async function processData(propertyId,i) {
             cookCountyScrapper(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
             await new Promise(resolve => setTimeout(resolve, 800));
             clerkOfCourt(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
-            await new Promise(resolve => setTimeout(resolve, 900));
-            RecorderOfDeeds(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
+            // await new Promise(resolve => setTimeout(resolve, 900));
+            // RecorderOfDeeds(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
             await new Promise(resolve => setTimeout(resolve, 900));
             TaxDelinquent(propertyId,propertyId) ;
     } catch(err) {

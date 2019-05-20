@@ -45,6 +45,7 @@ function f(){
                 $.ajax({
                     type: "POST",
                     url: "/csvupload/search",
+                    async: false,
                     data: JSON.stringify(pins),
                     timeout: 0
                 }).done(function () {

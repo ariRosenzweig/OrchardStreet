@@ -46,6 +46,7 @@ function f(){
                     type: "POST",
                     url: "/csvupload/search",
                     data: JSON.stringify(pins),
+                    timeout: 0
                 }).done(function () {
                     console.log("done calling upload function");
                     for (var i = 0; i < pins.length; i++) {

@@ -24,7 +24,32 @@ function displayResult(pin) {
     container.appendChild(document.createElement("br"));
     document.getElementById("content").appendChild(container);
 }
+function imageExists(image_url){
 
+    var http = new XMLHttpRequest();
+
+    http.open('HEAD', image_url, false);
+    http.send();
+
+    return http.status != 404;
+
+}
+async function checkIfImageisReady(pin,status) {
+    if (imageExists("/Images/ClerkOfCourt/" + pin + ".png")) {
+        displayResult(pin);
+        console.log("displaying results of" + pin);
+        console.log(status);
+        if(status == 1){
+            document.getElementById("loading").setAttribute("style", "display: none;");
+            document.getElementById("printButton").disabled = false;
+            console.log("Finished Requests");
+        }
+    } else {
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        checkIfImageisReady(pin,status);
+    }
+
+}
 function f(){
 
         var file = document.getElementById("fileInput").files[0];
@@ -45,22 +70,17 @@ function f(){
                 $.ajax({
                     type: "POST",
                     url: "/csvupload/search",
-                    data: JSON.stringify(pins),
-                    timeout: 6000000
-                }).done(function () {
-                    console.log("done calling upload function");
-                    for (var i = 0; i < pins.length; i++) {
-                        displayResult(pins[i]);
-                        console.log("displaying results of" + pins[i]);
-                    }
-                    document.getElementById("loading").setAttribute("style", "display: none;");
-                    document.getElementById("printButton").disabled = false;
-
+                    data: JSON.stringify(pins)
                 });
+                console.log("Request send");
+                for (var i = 0; i < pins.length; i++) {
+                    if(i == pins.length - 1)
+                        checkIfImageisReady(pins[i],1);
+                    else
+                        checkIfImageisReady(pins[i],0);
 
+                }
 
-
-                console.log("tt");
             }
         };
         reader.readAsText(file);

@@ -40,14 +40,14 @@ function cookCountyScrapper(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id){
             await page.click('#ContentPlaceHolder1_PINAddressSearch_btnSearch');
             await page.waitForSelector('#ContentPlaceHolder1_PropertyImage_propertyImage',{timeout:1000});
             await page.waitFor(1000);
-            await page.screenshot({path: 'public/Images/CookCounty/'+id+'.png',fullPage: true });
+            await page.screenshot({path: 'public/Images/CookCounty/'+id+'.png', clip: { x: 0, y: 0, width: 900, height: 1600 }});
             await browser.close();
             console.log("finished fetching page");
 
         }
         catch (error) {
             await page.waitFor(1000);
-            await page.screenshot({path: 'public/Images/CookCounty/'+id+'.png',fullPage: true });
+            await page.screenshot({path: 'public/Images/CookCounty/'+id+'.png', clip: { x: 0, y: 0, width: 900, height: 1600 }});
             await browser.close();
             console.log(error);
 

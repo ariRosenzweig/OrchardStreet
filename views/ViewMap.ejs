@@ -183,11 +183,7 @@
                 }
             })(marker, i));
 
-            google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
-                return function () {
-                    infowindow.close(map, marker);
-                }
-            })(marker, i));
+
             google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
                 return function () {
                     maintainMarkers(marker,i);

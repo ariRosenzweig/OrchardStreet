@@ -176,7 +176,18 @@
                     infowindow.open(map, marker);
                 }
             })(marker, i));
+            google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                return function () {
+                    infowindow.setContent(infoWindowDetails[i]);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
 
+            google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+                return function () {
+                    infowindow.close(map, marker);
+                }
+            })(marker, i));
             google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
                 return function () {
                     maintainMarkers(marker,i);

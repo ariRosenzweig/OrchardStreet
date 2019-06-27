@@ -4,7 +4,7 @@
     <style>
         /* Set the size of the div element that contains the map */
         #map {
-            height: 800px;  /* The height is 400 pixels */
+            height: 500px;  /* The height is 400 pixels */
             width: 100%;  /* The width is the width of the web page */
         }
     </style>
@@ -19,8 +19,10 @@
 <div id="map"></div>
 <div id="floating-panel">
     <input onclick="scrape();" type=button value="Scrape">
+    <input id = "freeHandDelete" type=button value="Select Good Region">
+    <input id = "freeHandAdd" type=button value="Select Bad Region">
     <input onclick="trash();" type=button value="Delete  Pin">
-    <input onclick="drawRec();" type=button value="Draw Rectangle">
+    <input onclick="clearRegions();" type=button value="Clear OverLay">
 </div>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
@@ -64,6 +66,8 @@
     let map;
     var shiftPressed = false;
     let markerList = [];
+    let flag = false;
+    let polycollectors = []
     //init function
     function initMap() {
         // The map, center
@@ -161,6 +165,29 @@
             } else
                 continue;
 
+
+            $("#freeHandDelete").click(function(e) {
+                e.preventDefault();
+                console.log("clicked");
+                disable()
+
+                google.maps.event.addDomListener(map.getDiv(),'mousedown',function(e){
+                    drawFreeHand(2)
+                });
+
+            });
+
+            $("#freeHandAdd").click(function(e) {
+                e.preventDefault();
+                console.log("clicked");
+                disable()
+
+                google.maps.event.addDomListener(map.getDiv(),'mousedown',function(e){
+                    drawFreeHand(1);
+                });
+
+            });
+
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(longitude, latitude),
                 map: map,
@@ -176,12 +203,12 @@
                     infowindow.open(map, marker);
                 }
             })(marker, i));
-            google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-                return function () {
-                    infowindow.setContent(infoWindowDetails[i]);
-                    infowindow.open(map, marker);
-                }
-            })(marker, i));
+            // google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+            //     return function () {
+            //         infowindow.setContent(infoWindowDetails[i]);
+            //         infowindow.open(map, marker);
+            //     }
+            // })(marker, i));
 
 
             google.maps.event.addListener(marker, 'rightclick', (function (marker, i) {
@@ -200,6 +227,7 @@
         })(marker, key));
 
 
+
     }
 
     function maintainMarkers(marker,i) {
@@ -213,6 +241,81 @@
             removeIds.splice(removeIds.indexOf(i), 1);
             marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
         }
+    }
+    function greenMarker(marker,i){
+        if (removePinList.includes(marker)) {
+            removePinList.splice(removePinList.indexOf(marker), 1);
+            removeIds.splice(removeIds.indexOf(i), 1);
+            marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
+        }
+    }
+    function redMarker(marker,i) {
+        if (!removePinList.includes(marker)){
+            removePinList.push(marker);
+            removeIds.push(i);
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+        }
+    }
+    function drawFreeHand(selector)
+    {
+        let c;
+        //the polygon
+        if(selector == 1)
+            c = "#FF0000";
+        else
+            c = "#008000";
+        poly=new google.maps.Polyline({map:map,clickable:false,strokeColor: c});
+
+        //move-listener
+        var move=google.maps.event.addListener(map,'mousemove',function(e){
+            poly.getPath().push(e.latLng);
+        });
+
+        //mouseup-listener
+        google.maps.event.addListenerOnce(map,'mouseup',function(e){
+            google.maps.event.removeListener(move);
+            var path=poly.getPath();
+            poly.setMap(null);
+            poly=new google.maps.Polygon({map:map,path:path,strokeColor : c});
+
+            google.maps.event.clearListeners(map.getDiv(), 'mousedown');
+
+            for(i = 0; i< markerList.length;i++){
+                point = markerList[i];
+                var cordinates =  new google.maps.LatLng(point.position.lat(),point.position.lng());
+                if(google.maps.geometry.poly.containsLocation(cordinates, poly)){
+                    console.log(i);
+                    if(selector == 1)
+                        redMarker(point,i);
+                    else
+                        greenMarker(point,i);
+                }
+            }
+            enable()
+            polycollectors.push(poly);
+        });
+    }
+    function clearRegions(){
+          for (i = 0; i <polycollectors.length; i++)
+            polycollectors[i].setMap(null);
+        polycollectors = []
+    }
+    function disable(){
+        map.setOptions({
+            draggable: false,
+            zoomControl: false,
+            scrollwheel: false,
+            disableDoubleClickZoom: false
+        });
+    }
+
+    function enable(){
+        map.setOptions({
+            draggable: true,
+            zoomControl: true,
+            scrollwheel: true,
+            disableDoubleClickZoom: true
+        });
     }
     //Rectangle drawing tool function
     function drawRec() {

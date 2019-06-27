@@ -124,7 +124,7 @@ function RecorderOfDeeds(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
     console.log("Inside recorder of deeds");
     const puppeteer = require('puppeteer');
     (async () => {
-        const browser = await puppeteer.launch({args: ['--no-sandbox']});
+        const browser = await puppeteer.launch({args: ['--no-sandbox'],headless: false});
         await new Promise(resolve => setTimeout(resolve, 800));
         const page = await browser.newPage();
         try{
@@ -178,8 +178,8 @@ async function processData(propertyId,i) {
             cookCountyScrapper(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
             await new Promise(resolve => setTimeout(resolve, 800));
             clerkOfCourt(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
-            // await new Promise(resolve => setTimeout(resolve, 900));
-            // RecorderOfDeeds(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
+            await new Promise(resolve => setTimeout(resolve, 900));
+            RecorderOfDeeds(pinBox[0].trim(),pinBox[1].trim(),pinBox[2].trim(),pinBox[3].trim(),pinBox[4].trim(),propertyId);
             await new Promise(resolve => setTimeout(resolve, 900));
             TaxDelinquent(propertyId,propertyId) ;
     } catch(err) {

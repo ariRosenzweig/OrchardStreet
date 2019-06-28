@@ -124,13 +124,12 @@ function RecorderOfDeeds(pinbox1,pinbox2,pinbox3,pinbox4,pinbox5,id) {
     console.log("Inside recorder of deeds");
     const puppeteer = require('puppeteer');
     (async () => {
-        const browser = await puppeteer.launch({args: ['--no-sandbox'],headless: false});
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const browser = await puppeteer.launch({args: ['--no-sandbox']});
         const page = await browser.newPage();
         try{
-            console.log("started fetching page");
+            console.log("started fetching page Recorder of Deeds");
             await page.goto('http://162.217.184.82/i2/default.aspx');
-            await page.waitFor(3000);
+            await page.waitFor(1000);
             console.log(pinbox2);
             await page.waitForSelector('#SearchFormEx1_PINTextBox0',{timeout:1000});
             await page.focus('#SearchFormEx1_PINTextBox0');
@@ -198,14 +197,12 @@ async function mainControllerScrapper(propertyIds,res) {
         processData(propertyIds[i].replace('{','').replace('}','').trim(), i).then(async function () {
             console.log("After Process data");
             if (++i < propertyIds.length) {
-                if (i % 15 == 0){
+                if (i % 10 == 0){
                     await new Promise(resolve => setTimeout(resolve, 4000));
                 }
                 loop(propertyIds, i, processData);
             } else {
-               // await new Promise(resolve => setTimeout(resolve, 10000));
-                console.log("done");
-               // res.send("Completed Scrapping");
+                 console.log("done");
             }
         });
     };
@@ -275,8 +272,6 @@ router.post("/map", function (req, res) {
     })()
         .then(() => {
         console.log("Done Scrapping");
-       // res.redirect(200,"displayMapWithImages",{"x":dtls[1]});
-          //  res.send("test");
     });
 });
 module.exports = router;

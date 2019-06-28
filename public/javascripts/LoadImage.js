@@ -9,9 +9,9 @@ function displayResult(pin) {
     ccrdImg.setAttribute("src", "/Images/CookCounty/" +pin+ ".png");
     container.appendChild(ccrdImg);
     // CCRD
-    // var dTaxImg = document.createElement("img");
-    // dTaxImg.setAttribute("src", "/Images/RecorderOfDeeds/" +pin+ ".png");
-    // container.appendChild(dTaxImg);
+    var dTaxImg = document.createElement("img");
+    dTaxImg.setAttribute("src", "/Images/RecorderOfDeeds/" +pin+ ".png");
+    container.appendChild(dTaxImg);
     //Delinquent Tax Search
     var cccImg = document.createElement("img");
     cccImg.setAttribute("src", "/Images/TaxDelinquent/" +pin+ ".png");
@@ -35,7 +35,7 @@ function imageExists(image_url){
 
 }
 async function checkIfImageisReady(pin,status) {
-    if (imageExists("/Images/ClerkOfCourt/" + pin + ".png")) {
+    if (imageExists("/Images/RecorderOfDeeds/" + pin + ".png")) {
         displayResult(pin);
         console.log("displaying results of" + pin);
         console.log(status);
